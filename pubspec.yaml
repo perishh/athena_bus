@@ -1,6 +1,6 @@
 name: athena_bus
 description: "A new Flutter project."
-publish_to: 'none'
+publish_to: "none"
 version: 0.1.0+1
 
 environment:
@@ -14,6 +14,18 @@ dev_dependencies:
   flutter_test:
     sdk: flutter
   flutter_lints: ^6.0.0
+  flutter_launcher_icons: ^0.14.4
 
 flutter:
   uses-material-design: true
+
+flutter_launcher_icons:
+  image_path: "assets/icons/solar_bus_duotone.png"
+
+  android: true
+  adaptive_icon_background: "#fcffff"
+  adaptive_icon_foreground: "assets/icons/solar_bus_duotone.png"
+
+  ios: true
+  background_color_ios: "#fcffff"
+  remove_alpha_ios: true
