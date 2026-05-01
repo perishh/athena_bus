@@ -1,0 +1,50 @@
+import 'package:sqflite/sqflite.dart';
+import 'package:path/path.dart' as path;
+
+class DatabaseService {
+  static final DatabaseService instance = DatabaseService._internal();
+  DatabaseService._internal();
+
+  static Database? _database;
+
+  Future<Database> get database async {
+    if (_database != null) return _database!;
+    _database = await _init();
+    return _database!;
+  }
+
+  Future<Database> _init() async {
+    var dbPath = await getDatabasesPath();
+    return await openDatabase(
+      path.join(dbPath, 'data.db'),
+      version: 1,
+      onCreate: _create,
+    );
+  }
+
+  static const stopsKey = "stops";
+
+  Future _create(Database db, int version) async {
+    await db.execute('''
+CREATE TABLE `$stopsKey` (
+  `id` INTEGER PRIMARY KEY NOT NULL,
+  `code` VARCHAR(10) NOT NULL,
+  `desc` VARCHAR(64) NOT NULL,
+  `descEn` VARCHAR(64) NULL DEFAULT NULL,
+  `street` VARCHAR(64) NULL DEFAULT NULL,
+  `streetEn` VARCHAR(64) NULL DEFAULT NULL,
+  `heading` INTEGER NOT NULL DEFAULT 0,
+  `lng` DECIMAL NOT NULL,
+  `lat` DECIMAL NOT NULL,
+  `type` INTEGER NOT NULL,
+  `amea` INTEGER NOT NULL,
+  `terminal` VARCHAR(400) NULL DEFAULT NULL,
+  `terminalEn` VARCHAR(400) NULL DEFAULT NULL
+)''');
+  }
+
+  Future close() async {
+    final db = await instance.database;
+    db.close();
+  }
+}
