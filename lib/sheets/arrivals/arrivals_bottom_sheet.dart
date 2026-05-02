@@ -20,16 +20,32 @@ class ArrivalsBottomSheet extends HookConsumerWidget {
       return const SizedBox.shrink();
     }
 
+    useEffect(() {
+      Future.microtask(
+        () {
+          controller.animateTo(
+            0.3,
+            duration: const Duration(milliseconds: 300),
+            curve: Curves.easeOut,
+          );
+        },
+      );
+      return null;
+    });
+
     final state = ref.watch(arrivalsProvider(stop.id));
 
     return NotificationListener<DraggableScrollableNotification>(
       onNotification: (notification) {
+        if (notification.extent <= 0.0) {
+          ref.read(selectedStopProvider.notifier).deselect();
+        }
         return true;
       },
       child: DraggableScrollableSheet(
         controller: controller,
-        initialChildSize: 0.3,
-        minChildSize: 0.1,
+        initialChildSize: 0.005,
+        minChildSize: 0.0,
         maxChildSize: 0.8,
         snap: true,
         snapSizes: [0.1, 0.3, 0.5, 0.8],
@@ -75,8 +91,13 @@ class ArrivalsBottomSheet extends HookConsumerWidget {
                         padding: const EdgeInsets.all(8),
                         borderRadius: BorderRadius.circular(999),
                         child: Icon(MaterialCommunityIcons.close),
-                        onTap: () =>
-                            ref.read(selectedStopProvider.notifier).deselect(),
+                        onTap: () {
+                          controller.animateTo(
+                            0,
+                            duration: const Duration(milliseconds: 200),
+                            curve: Curves.easeIn,
+                          );
+                        },
                       ),
                     ],
                   ),
