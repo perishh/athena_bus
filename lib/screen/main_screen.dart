@@ -1,6 +1,9 @@
 import 'package:athena_bus/generated/material_community_icons.dart';
 import 'package:athena_bus/layers/stop_layer.dart';
+import 'package:athena_bus/layers/user_location_layer.dart';
 import 'package:athena_bus/providers/backdrop_key_provider.dart';
+import 'package:athena_bus/providers/location_manager_provider.dart';
+import 'package:athena_bus/providers/stops_provider.dart';
 import 'package:athena_bus/sheets/dataset_bottom_sheet.dart';
 import 'package:athena_bus/widgets/blur_icon_button.dart';
 import 'package:flutter/material.dart';
@@ -38,6 +41,7 @@ class MainScreen extends HookConsumerWidget {
                 maxNativeZoom: 20,
               ),
               StopLayer(mapController: mapController),
+              UserLocationLayer(),
             ],
           ),
           Positioned(
@@ -53,6 +57,31 @@ class MainScreen extends HookConsumerWidget {
                     context: context,
                     builder: (context) => const DatasetBottomSheet(),
                   );
+                },
+              ),
+            ),
+          ),
+          Positioned(
+            right: 16,
+            bottom: 16,
+            child: SafeArea(
+              child: BlurIconButton(
+                backdropKey: backdropKey,
+                elevation: 4,
+                icon: MaterialCommunityIcons.crosshairs_gps,
+                onPressed: () {
+                  final position = ref
+                      .read(locationProvider)
+                      .asData
+                      ?.value
+                      .position;
+
+                  if (position == null) return;
+
+                  mapController.move(position, 16);
+                  ref
+                      .read(stopsProvider.notifier)
+                      .loadStops(mapController.camera.visibleBounds);
                 },
               ),
             ),
