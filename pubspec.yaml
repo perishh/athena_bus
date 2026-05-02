@@ -37,6 +37,12 @@ flutter:
   uses-material-design: true
 
   fonts:
+    - family: "Google Sans"
+      fonts:
+        - asset: assets/fonts/google_sans.ttf
+        - asset: assets/fonts/google_sans_italic.ttf
+          style: italic
+
     - family: MaterialCommunityIcons
       fonts:
         - asset: assets/fonts/materialcommunityicons.ttf

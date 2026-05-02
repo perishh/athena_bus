@@ -75,6 +75,8 @@ class ArrivalsBottomSheet extends HookConsumerWidget {
                         padding: const EdgeInsets.all(8),
                         borderRadius: BorderRadius.circular(999),
                         child: Icon(MaterialCommunityIcons.close),
+                        onTap: () =>
+                            ref.read(selectedStopProvider.notifier).deselect(),
                       ),
                     ],
                   ),
@@ -115,24 +117,45 @@ class ArrivalsBottomSheet extends HookConsumerWidget {
                           horizontal: 16,
                           vertical: 8,
                         ),
-                        margin: const EdgeInsets.only(top: 8),
-                        child: Row(
+                        margin: const EdgeInsets.symmetric(vertical: 8),
+                        child: Column(
                           children: [
-                            Expanded(child: Text("Τελευταία ενημέρωση")),
-                            state.loading
-                                ? SizedBox(
-                                    height: 16,
-                                    width: 16,
-                                    child: CircularProgressIndicator(),
-                                  )
-                                : Text(
-                                    DateFormat(
-                                      "HH:mm",
-                                    ).format(state.lastFetched),
-                                    style: TextStyle(
-                                      fontWeight: FontWeight.w500,
+                            Row(
+                              children: [
+                                Expanded(child: Text("Τελευταία ενημέρωση")),
+                                state.loading
+                                    ? SizedBox(
+                                        height: 16,
+                                        width: 16,
+                                        child: CircularProgressIndicator(),
+                                      )
+                                    : Text(
+                                        DateFormat(
+                                          "HH:mm",
+                                        ).format(state.lastFetched),
+                                        style: TextStyle(
+                                          fontWeight: FontWeight.w500,
+                                        ),
+                                      ),
+                              ],
+                            ),
+                            if (state.error)
+                              Container(
+                                margin: const EdgeInsets.only(top: 8),
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  spacing: 16,
+                                  children: [
+                                    Icon(MaterialCommunityIcons.alert_circle),
+                                    Text(
+                                      "Τα δεδομένα ενδέχεται να είναι ανακριβή.",
+                                      style: TextStyle(
+                                        fontStyle: FontStyle.italic,
+                                      ),
                                     ),
-                                  ),
+                                  ],
+                                ),
+                              ),
                           ],
                         ),
                       ),
