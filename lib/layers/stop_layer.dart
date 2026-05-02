@@ -13,6 +13,7 @@ class StopLayer extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final stops = ref.watch(stopsProvider);
+    final selectedStop = ref.watch(selectedStopProvider);
 
     useEffect(() {
       final subscription = mapController.mapEventStream.listen((event) {
@@ -35,25 +36,37 @@ class StopLayer extends HookConsumerWidget {
 
     return MarkerLayer(
       markers: stops.map((stop) {
+        final isSelected = selectedStop?.id == stop.id;
         return Marker(
+          key: ValueKey(stop.id),
           point: LatLng(stop.lat, stop.lng),
           height: 36,
           width: 36,
           child: GestureDetector(
-            onTap: () {},
-            child: Container(
+            onTap: () => ref.read(selectedStopProvider.notifier).select(stop),
+            child: AnimatedContainer(
+              duration: const Duration(milliseconds: 200),
               padding: EdgeInsets.all(6),
               decoration: BoxDecoration(
-                color: Colors.white.withAlpha(240),
+                color: isSelected
+                    ? Colors.blue.withAlpha(240)
+                    : Colors.white.withAlpha(240),
                 borderRadius: BorderRadius.circular(1000),
                 boxShadow: [
-                  BoxShadow(blurRadius: 8, color: Colors.black26),
+                  BoxShadow(
+                    blurRadius: isSelected ? 12 : 8,
+                    color: isSelected
+                        ? Colors.blue.withAlpha(100)
+                        : Colors.black26,
+                  ),
                 ],
               ),
-              child: Icon(
-                MaterialCommunityIcons.bus_stop,
-                color: Colors.black,
-                size: 24,
+              child: Center(
+                child: Icon(
+                  MaterialCommunityIcons.bus_stop,
+                  color: isSelected ? Colors.white : Colors.black,
+                  size: 24,
+                ),
               ),
             ),
           ),

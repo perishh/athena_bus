@@ -1,4 +1,5 @@
 import 'package:athena_bus/generated/material_community_icons.dart';
+import 'package:athena_bus/hooks/use_stop_info_bottom_sheet.dart';
 import 'package:athena_bus/layers/stop_layer.dart';
 import 'package:athena_bus/layers/user_location_layer.dart';
 import 'package:athena_bus/providers/backdrop_key_provider.dart';
@@ -17,10 +18,14 @@ class MainScreen extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final scaffoldKey = useMemoized(() => GlobalKey<ScaffoldState>());
     final backdropKey = ref.watch(backdropKeyProvider);
     final mapController = useMemoized(() => MapController());
 
+    useStopInfoBottomSheet(ref, scaffoldKey);
+
     return Scaffold(
+      key: scaffoldKey,
       extendBody: true,
       extendBodyBehindAppBar: true,
       body: Stack(
@@ -78,7 +83,7 @@ class MainScreen extends HookConsumerWidget {
 
                   if (position == null) return;
 
-                  mapController.move(position, 16);
+                  mapController.move(position, 16.5);
                   ref
                       .read(stopsProvider.notifier)
                       .loadStops(mapController.camera.visibleBounds);

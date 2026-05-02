@@ -21,3 +21,19 @@ class Stops extends _$Stops {
     state = [];
   }
 }
+
+@Riverpod(keepAlive: true)
+class SelectedStop extends _$SelectedStop {
+  @override
+  Stop? build() {
+    return null;
+  }
+
+  void select(Stop stop) {
+    state = stop;
+  }
+
+  void deselect() {
+    state = null;
+  }
+}
