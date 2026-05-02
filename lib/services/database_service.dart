@@ -1,3 +1,4 @@
+import 'package:athena_bus/models/dataset.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart' as path;
 
@@ -22,11 +23,9 @@ class DatabaseService {
     );
   }
 
-  static const stopsKey = "stops";
-
   Future _create(Database db, int version) async {
     await db.execute('''
-CREATE TABLE `$stopsKey` (
+CREATE TABLE `${Dataset.stops.table}` (
   `id` INTEGER PRIMARY KEY NOT NULL,
   `code` VARCHAR(10) NOT NULL,
   `desc` VARCHAR(64) NOT NULL,
@@ -40,6 +39,18 @@ CREATE TABLE `$stopsKey` (
   `amea` INTEGER NOT NULL,
   `terminal` VARCHAR(400) NULL DEFAULT NULL,
   `terminalEn` VARCHAR(400) NULL DEFAULT NULL
+)''');
+    await db.execute('''
+CREATE INDEX idx_lat_lng ON ${Dataset.stops.table}(lat, lng)''');
+
+    await db.execute('''
+CREATE TABLE ${Dataset.routes.table}(
+  id INTEGER PRIMARY KEY NOT NULL,
+  lineId INTEGER NOT NULL,
+  desc VARCHAR(256) NOT NULL,
+  descEn VARCHAR(256) NOT NULL,
+  type INTEGER NOT NULL,
+  length DECIMAL NOT NULL
 )''');
   }
 

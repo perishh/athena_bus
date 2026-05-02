@@ -1,42 +1,37 @@
+import 'package:athena_bus/models/dataset.dart';
 import 'package:athena_bus/services/dataset_service.dart';
-import 'package:athena_bus/services/database_service.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
-import 'package:freezed_annotation/freezed_annotation.dart';
 
 part 'dataset_manager_provider.g.dart';
-part 'dataset_manager_provider.freezed.dart';
 
 enum DatasetStatus { notDownloaded, downloading, downloaded, error }
-
-@freezed
-abstract class DatasetManagerState with _$DatasetManagerState {
-  const factory DatasetManagerState({required DatasetStatus stopsStatus}) =
-      _DatasetManagerState;
-}
 
 @Riverpod(keepAlive: true)
 class DatasetManager extends _$DatasetManager {
   @override
-  Future<DatasetManagerState> build() async {
-    return DatasetManagerState(
-      stopsStatus: await DatasetService.isDownloaded(DatabaseService.stopsKey)
+  Future<Map<Dataset, DatasetStatus>> build() async {
+    return {
+      Dataset.stops: await DatasetService.isDownloaded(Dataset.stops)
           ? DatasetStatus.downloaded
           : DatasetStatus.notDownloaded,
-    );
+      Dataset.routes: await DatasetService.isDownloaded(Dataset.routes)
+          ? DatasetStatus.downloaded
+          : DatasetStatus.notDownloaded,
+    };
   }
 
-  Future downloadStops() async {
+  Future download(Dataset dataset) async {
     try {
       state = AsyncValue.data(
-        state.value!.copyWith(stopsStatus: DatasetStatus.downloading),
+        {...state.value!}..update(dataset, (_) => DatasetStatus.downloading),
       );
-      await DatasetService.downloadDataset("stops");
+      await DatasetService.downloadDataset(dataset);
       state = AsyncValue.data(
-        state.value!.copyWith(stopsStatus: DatasetStatus.downloaded),
+        {...state.value!}..update(dataset, (_) => DatasetStatus.downloaded),
       );
     } catch (e, _) {
       state = AsyncValue.data(
-        state.value!.copyWith(stopsStatus: DatasetStatus.error),
+        {...state.value!}..update(dataset, (_) => DatasetStatus.error),
       );
     }
   }

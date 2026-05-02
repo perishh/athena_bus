@@ -1,4 +1,5 @@
 import 'package:athena_bus/generated/material_community_icons.dart';
+import 'package:athena_bus/models/dataset.dart';
 import 'package:athena_bus/providers/backdrop_key_provider.dart';
 import 'package:athena_bus/providers/dataset_manager_provider.dart';
 import 'package:athena_bus/widgets/blur_icon_button.dart';
@@ -45,52 +46,58 @@ class DatasetBottomSheet extends HookConsumerWidget {
             ),
           ),
           datasetManager.when(
-            data: (manager) => Container(
-              padding: EdgeInsets.symmetric(horizontal: 16),
-              child: Row(
-                spacing: 16,
-                children: [
-                  BlurredContainer(
-                    backdropKey: backdropKey,
-                    color: Colors.white.withAlpha(35),
-                    padding: EdgeInsets.all(8),
-                    borderRadius: BorderRadius.circular(999),
-                    child: Icon(MaterialCommunityIcons.bus_stop, size: 32),
-                  ),
-                  Expanded(
-                    child: Text(
-                      "Στάσεις",
-                      style: TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.w500,
+            data: (state) => Column(
+              spacing: 12,
+              children: Dataset.values.map((dataset) {
+                return Container(
+                  padding: EdgeInsets.symmetric(horizontal: 16),
+                  child: Row(
+                    spacing: 16,
+                    children: [
+                      BlurredContainer(
+                        backdropKey: backdropKey,
+                        color: Colors.white.withAlpha(35),
+                        padding: EdgeInsets.all(8),
+                        borderRadius: BorderRadius.circular(999),
+                        child: Icon(dataset.icon, size: 32),
                       ),
-                    ),
-                  ),
-                  manager.stopsStatus == DatasetStatus.downloading
-                      ? Container(
-                          margin: EdgeInsets.only(right: 8),
-                          width: 24,
-                          height: 24,
-                          child: CircularProgressIndicator(),
-                        )
-                      : BlurIconButton(
-                          icon:
-                              manager.stopsStatus == DatasetStatus.notDownloaded
-                              ? MaterialCommunityIcons.cloud_download_outline
-                              : manager.stopsStatus == DatasetStatus.downloaded
-                              ? MaterialCommunityIcons.check
-                              : MaterialCommunityIcons.alert_octagon,
-                          onPressed:
-                              manager.stopsStatus ==
-                                      DatasetStatus.notDownloaded ||
-                                  manager.stopsStatus == DatasetStatus.error
-                              ? () => ref
-                                    .read(datasetManagerProvider.notifier)
-                                    .downloadStops()
-                              : null,
+                      Expanded(
+                        child: Text(
+                          dataset.displayName,
+                          style: TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.w500,
+                          ),
                         ),
-                ],
-              ),
+                      ),
+                      state[dataset] == DatasetStatus.downloading
+                          ? Container(
+                              margin: EdgeInsets.only(right: 8),
+                              width: 24,
+                              height: 24,
+                              child: CircularProgressIndicator(),
+                            )
+                          : BlurIconButton(
+                              icon:
+                                  state[dataset] == DatasetStatus.notDownloaded
+                                  ? MaterialCommunityIcons
+                                        .cloud_download_outline
+                                  : state[dataset] == DatasetStatus.downloaded
+                                  ? MaterialCommunityIcons.check
+                                  : MaterialCommunityIcons.alert_octagon,
+                              onPressed:
+                                  state[dataset] ==
+                                          DatasetStatus.notDownloaded ||
+                                      state[dataset] == DatasetStatus.error
+                                  ? () => ref
+                                        .read(datasetManagerProvider.notifier)
+                                        .download(dataset)
+                                  : null,
+                            ),
+                    ],
+                  ),
+                );
+              }).toList(),
             ),
             loading: () => LinearProgressIndicator(),
             error: (e, _) => Text("Σφάλμα: $e"),

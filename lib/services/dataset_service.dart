@@ -1,3 +1,4 @@
+import 'package:athena_bus/models/dataset.dart';
 import 'package:athena_bus/services/api_service.dart';
 import 'package:athena_bus/services/database_service.dart';
 
@@ -5,20 +6,11 @@ import 'package:athena_bus/services/database_service.dart';
 class DatasetService {
   DatasetService._();
 
-  static final Map<String, (String, String)> datasetTables = {
-    "stops": (
-      "getStopsW",
-      "id, code, desc, descEn, street, streetEn, heading, lng, lat, type, amea, terminal, terminalEn",
-    ),
-  };
-
-  static Future<bool> downloadDataset(String dataset) async {
+  static Future<bool> downloadDataset(Dataset dataset) async {
     try {
-      final endpoint = datasetTables[dataset]!.$1;
-      final cols = datasetTables[dataset]!.$2;
       final db = await DatabaseService.instance.database;
 
-      final data = await ApiService.getGzippedData(endpoint);
+      final data = await ApiService.getGzippedData(dataset.endpoint);
       await db.transaction((txn) async {
         var batch = txn.batch();
         for (var line in data.substring(1, data.length - 1).split("),(")) {
@@ -26,7 +18,9 @@ class DatasetService {
               .replaceAll(RegExp("(\"null\"|\"\")"), "NULL")
               .replaceAll("'", r"''")
               .replaceAll(RegExp(r'(?<!\\)"'), "'");
-          batch.rawInsert("INSERT INTO $dataset($cols) VALUES ($formatted)");
+          batch.rawInsert(
+            "INSERT INTO ${dataset.table}(${dataset.columns}) VALUES ($formatted)",
+          );
         }
         await batch.commit(noResult: true);
       });
@@ -36,10 +30,10 @@ class DatasetService {
     return true;
   }
 
-  static Future<bool> isDownloaded(String dataset) async {
+  static Future<bool> isDownloaded(Dataset dataset) async {
     final db = await DatabaseService.instance.database;
 
-    final res = await db.query(dataset, columns: ['COUNT(1)']);
+    final res = await db.query(dataset.table, columns: ['COUNT(1)']);
     return res[0]['COUNT(1)'] as int > 0;
   }
 }

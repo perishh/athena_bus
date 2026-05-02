@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 void main() {
-  runApp(ProviderScope(child: const MainApp()));
+  runApp(ProviderScope(retry: (_, _) => null, child: const MainApp()));
 }
 
 class MainApp extends StatelessWidget {
