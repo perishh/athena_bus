@@ -1,5 +1,6 @@
 import 'package:athena_bus/generated/material_community_icons.dart';
 import 'package:athena_bus/providers/arrivals_provider.dart';
+import 'package:athena_bus/providers/arrivals_sheet_controller_provider.dart';
 import 'package:athena_bus/sheets/arrivals/widgets/arrivals_list.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:intl/intl.dart';
@@ -13,7 +14,7 @@ class ArrivalsBottomSheet extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final controller = useDraggableScrollableController();
+    final controller = ref.watch(arrivalsSheetControllerProvider);
     final stop = ref.watch(selectedStopProvider);
 
     if (stop == null) {
@@ -31,7 +32,7 @@ class ArrivalsBottomSheet extends HookConsumerWidget {
         },
       );
       return null;
-    });
+    }, []);
 
     final state = ref.watch(arrivalsProvider(stop.id));
 

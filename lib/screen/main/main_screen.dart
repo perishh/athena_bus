@@ -1,8 +1,10 @@
 import 'package:athena_bus/generated/material_community_icons.dart';
+import 'package:athena_bus/layers/route_layer.dart';
 import 'package:athena_bus/layers/stop_layer.dart';
 import 'package:athena_bus/layers/user_location_layer.dart';
 import 'package:athena_bus/providers/map_controller_provider.dart';
 import 'package:athena_bus/screen/main/widgets/location_button.dart';
+import 'package:athena_bus/screen/main/widgets/route_top_bar.dart';
 import 'package:athena_bus/sheets/arrivals/arrivals_bottom_sheet.dart';
 import 'package:athena_bus/sheets/dataset/dataset_bottom_sheet.dart';
 import 'package:athena_bus/widgets/blurred_container.dart';
@@ -12,21 +14,39 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:flutter_map/flutter_map.dart';
 
-class MainScreen extends StatefulWidget {
+class MainScreen extends ConsumerStatefulWidget {
   const MainScreen({super.key});
 
   @override
-  State<MainScreen> createState() => _MainScreenState();
+  ConsumerState<MainScreen> createState() => _MainScreenState();
 }
 
-class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin {
-  late final _mapController = AnimatedMapController(vsync: this);
-
+class _MainScreenState extends ConsumerState<MainScreen>
+    with TickerProviderStateMixin {
+  late final mapController = AnimatedMapController(vsync: this);
   @override
   Widget build(BuildContext context) {
+    // final selectedRoute = ref.watch(selectedRouteProvider);
+
+    // useEffect(() {
+    //   if (selectedRoute == null) return null;
+    //   final details = selectedRoute.details;
+    //   if (details.path.isEmpty) return null;
+    //   final bounds = LatLngBounds.fromPoints(details.path);
+    //   Future.microtask(() {
+    //     mapController.animatedFitCamera(
+    //       cameraFit: CameraFit.bounds(
+    //         bounds: bounds,
+    //         padding: const EdgeInsets.all(48),
+    //       ),
+    //     );
+    //   });
+    //   return null;
+    // }, [selectedRoute]);
+
     return ProviderScope(
       overrides: [
-        mapControllerProvider.overrideWithValue(_mapController),
+        mapControllerProvider.overrideWithValue(mapController),
       ],
       child: Scaffold(
         extendBody: true,
@@ -34,7 +54,7 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin {
         body: Stack(
           children: [
             FlutterMap(
-              mapController: _mapController.mapController,
+              mapController: mapController.mapController,
               options: MapOptions(
                 maxZoom: 20,
                 initialCenter: LatLng(37.971996112, 23.7341637),
@@ -48,6 +68,7 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin {
                   userAgentPackageName: "AthenaBus/1.0",
                   maxNativeZoom: 20,
                 ),
+                const RouteLayer(),
                 const StopLayer(),
                 const UserLocationLayer(),
               ],
@@ -86,6 +107,7 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin {
             ),
             const LocationButton(),
             const ArrivalsBottomSheet(),
+            const RouteTopBar(),
           ],
         ),
       ),

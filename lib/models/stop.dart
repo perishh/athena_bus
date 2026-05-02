@@ -53,17 +53,17 @@ class Stop {
 
   factory Stop.fromJson(Map<String, dynamic> json) {
     return Stop(
-      id: int.parse(json['StopID'] as String),
-      code: json['StopCode'] as String,
+      id: int.parse(json['StopID'].toString()),
+      code: json['StopCode'].toString(),
       desc: json['StopDescr'] as String,
       descEn: json['StopDescrEng'] as String?,
       street: json['StopStreet'] as String?,
       streetEn: json['StopStreetEng'] as String?,
-      heading: int.parse((json['StopHeading'] as String?) ?? "0"),
-      lng: double.parse(json['StopLng'] as String),
-      lat: double.parse(json['StopLat'] as String),
-      type: int.parse(json['StopType'] as String),
-      amea: json['StopAmea'] as String == "1",
+      heading: int.parse((json['StopHeading']?.toString()) ?? "0"),
+      lng: double.parse(json['StopLng'].toString()),
+      lat: double.parse(json['StopLat'].toString()),
+      type: int.parse(json['StopType'].toString()),
+      amea: json['StopAmea'].toString() == "1",
       terminal: null,
       terminalEn: null,
     );

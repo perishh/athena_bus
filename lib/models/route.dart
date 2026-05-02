@@ -1,3 +1,6 @@
+import 'package:athena_bus/models/stop.dart';
+import 'package:latlong2/latlong.dart';
+
 class Route {
   final int id;
   final int lineId;
@@ -34,4 +37,27 @@ class Route {
     type: json['RouteType'] as int,
     length: (json['RouteDistance'] as num).toDouble(),
   );
+}
+
+class RouteDetails {
+  final List<LatLng> path;
+  final List<Stop> stops;
+
+  RouteDetails({required this.path, required this.stops});
+
+  factory RouteDetails.fromJson(Map<String, dynamic> json) {
+    return RouteDetails(
+      path: (json['details'] as List<dynamic>)
+          .map(
+            (x) => LatLng(
+              double.parse(x["routed_y"].toString()),
+              double.parse(x["routed_x"].toString()),
+            ),
+          )
+          .toList(),
+      stops: (json['stops'] as List<dynamic>)
+          .map((x) => Stop.fromJson(x))
+          .toList(),
+    );
+  }
 }

@@ -54,6 +54,17 @@ class ArrivalsList extends StatelessWidget {
         itemBuilder: (context, index) => RouteCard(
           route: routes.firstWhere(
             (r) => r.$1.id == int.parse(arrivals[index].route),
+            orElse: () => (
+              Route(
+                id: -1,
+                desc: 'Άγνωστη διαδρομή',
+                descEn: 'Unknown Route',
+                lineId: -1,
+                type: 0,
+                length: 0,
+              ),
+              arrivals[index].route,
+            ),
           ),
           arrivals: arrivals[index],
         ),

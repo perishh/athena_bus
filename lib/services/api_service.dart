@@ -31,4 +31,13 @@ final class ApiService {
         .map((x) => (Route.fromJson(x), x['LineID'] as String))
         .toList();
   }
+
+  static Future<RouteDetails> getRoutePath(int routeId) async {
+    final uri = Uri.parse(
+      "https://telematics.oasa.gr/api/?act=webGetRoutesDetailsAndStops&p1=$routeId",
+    );
+    final res = await http.get(uri);
+
+    return RouteDetails.fromJson(jsonDecode(res.body));
+  }
 }
