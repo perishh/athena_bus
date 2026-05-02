@@ -1,4 +1,4 @@
-import 'package:athena_bus/screen/main_screen.dart';
+import 'package:athena_bus/screen/main/main_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 

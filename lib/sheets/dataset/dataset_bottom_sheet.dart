@@ -1,8 +1,6 @@
 import 'package:athena_bus/generated/material_community_icons.dart';
 import 'package:athena_bus/models/dataset.dart';
-import 'package:athena_bus/providers/backdrop_key_provider.dart';
 import 'package:athena_bus/providers/dataset_manager_provider.dart';
-import 'package:athena_bus/widgets/blur_icon_button.dart';
 import 'package:athena_bus/widgets/blurred_container.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
@@ -12,12 +10,10 @@ class DatasetBottomSheet extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final backdropKey = ref.watch(backdropKeyProvider);
     final datasetManager = ref.watch(datasetManagerProvider);
     final bottom = MediaQuery.paddingOf(context).bottom;
 
     return BlurredContainer(
-      backdropKey: backdropKey,
       borderRadius: BorderRadius.only(
         topLeft: Radius.circular(32),
         topRight: Radius.circular(32),
@@ -55,7 +51,6 @@ class DatasetBottomSheet extends HookConsumerWidget {
                     spacing: 16,
                     children: [
                       BlurredContainer(
-                        backdropKey: backdropKey,
                         color: Colors.white.withAlpha(35),
                         padding: EdgeInsets.all(8),
                         borderRadius: BorderRadius.circular(999),
@@ -77,15 +72,10 @@ class DatasetBottomSheet extends HookConsumerWidget {
                               height: 24,
                               child: CircularProgressIndicator(),
                             )
-                          : BlurIconButton(
-                              icon:
-                                  state[dataset] == DatasetStatus.notDownloaded
-                                  ? MaterialCommunityIcons
-                                        .cloud_download_outline
-                                  : state[dataset] == DatasetStatus.downloaded
-                                  ? MaterialCommunityIcons.check
-                                  : MaterialCommunityIcons.alert_octagon,
-                              onPressed:
+                          : BlurredContainer(
+                              padding: EdgeInsets.all(8),
+                              borderRadius: BorderRadius.circular(999),
+                              onTap:
                                   state[dataset] ==
                                           DatasetStatus.notDownloaded ||
                                       state[dataset] == DatasetStatus.error
@@ -93,6 +83,14 @@ class DatasetBottomSheet extends HookConsumerWidget {
                                         .read(datasetManagerProvider.notifier)
                                         .download(dataset)
                                   : null,
+                              child: Icon(
+                                state[dataset] == DatasetStatus.notDownloaded
+                                    ? MaterialCommunityIcons
+                                          .cloud_download_outline
+                                    : state[dataset] == DatasetStatus.downloaded
+                                    ? MaterialCommunityIcons.check
+                                    : MaterialCommunityIcons.alert_octagon,
+                              ),
                             ),
                     ],
                   ),

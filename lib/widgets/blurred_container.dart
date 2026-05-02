@@ -1,7 +1,9 @@
 import 'dart:ui';
+import 'package:athena_bus/providers/backdrop_key_provider.dart';
 import 'package:flutter/material.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 
-class BlurredContainer extends StatelessWidget {
+class BlurredContainer extends HookConsumerWidget {
   final Widget child;
   final double sigma;
   final Color color;
@@ -13,7 +15,7 @@ class BlurredContainer extends StatelessWidget {
   final double? height;
   final AlignmentGeometry? alignment;
   final Clip clipBehavior;
-  final BackdropKey? backdropKey;
+  final VoidCallback? onTap;
 
   const BlurredContainer({
     super.key,
@@ -27,28 +29,32 @@ class BlurredContainer extends StatelessWidget {
     this.height,
     this.alignment,
     this.clipBehavior = Clip.hardEdge,
-    this.backdropKey,
+    this.onTap,
     required this.child,
   });
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final backdropKey = ref.watch(backdropKeyProvider);
     return Container(
       margin: margin,
       decoration: decoration,
       child: ClipRRect(
         borderRadius: borderRadius ?? BorderRadius.zero,
         clipBehavior: clipBehavior,
-        child: BackdropFilter(
-          backdropGroupKey: backdropKey,
-          filter: ImageFilter.blur(sigmaX: sigma, sigmaY: sigma),
-          child: Container(
-            width: width,
-            height: height,
-            padding: padding,
-            alignment: alignment,
-            decoration: BoxDecoration(color: color),
-            child: child,
+        child: GestureDetector(
+          onTap: onTap,
+          child: BackdropFilter(
+            backdropGroupKey: backdropKey,
+            filter: ImageFilter.blur(sigmaX: sigma, sigmaY: sigma),
+            child: Container(
+              width: width,
+              height: height,
+              padding: padding,
+              alignment: alignment,
+              decoration: BoxDecoration(color: color),
+              child: child,
+            ),
           ),
         ),
       ),

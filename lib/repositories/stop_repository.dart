@@ -1,4 +1,6 @@
+import 'package:athena_bus/models/arrival.dart';
 import 'package:athena_bus/models/stop.dart';
+import 'package:athena_bus/services/api_service.dart';
 import 'package:athena_bus/services/database_service.dart';
 import 'package:flutter_map/flutter_map.dart';
 
@@ -14,5 +16,10 @@ class StopRepository {
     );
 
     return stops.map(Stop.fromMap).toList();
+  }
+
+  static Future<List<ArrivalRoute>> getArrivals(int stopId) async {
+    final res = await ApiService.getArrivals(stopId);
+    return res.routes;
   }
 }
