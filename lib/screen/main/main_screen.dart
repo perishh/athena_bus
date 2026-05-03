@@ -1,4 +1,5 @@
 import 'package:athena_bus/generated/material_community_icons.dart';
+import 'package:athena_bus/layers/bus_location_layer.dart';
 import 'package:athena_bus/layers/route_layer.dart';
 import 'package:athena_bus/layers/stop_layer.dart';
 import 'package:athena_bus/layers/user_location_layer.dart';
@@ -26,24 +27,6 @@ class _MainScreenState extends ConsumerState<MainScreen>
   late final mapController = AnimatedMapController(vsync: this);
   @override
   Widget build(BuildContext context) {
-    // final selectedRoute = ref.watch(selectedRouteProvider);
-
-    // useEffect(() {
-    //   if (selectedRoute == null) return null;
-    //   final details = selectedRoute.details;
-    //   if (details.path.isEmpty) return null;
-    //   final bounds = LatLngBounds.fromPoints(details.path);
-    //   Future.microtask(() {
-    //     mapController.animatedFitCamera(
-    //       cameraFit: CameraFit.bounds(
-    //         bounds: bounds,
-    //         padding: const EdgeInsets.all(48),
-    //       ),
-    //     );
-    //   });
-    //   return null;
-    // }, [selectedRoute]);
-
     return ProviderScope(
       overrides: [
         mapControllerProvider.overrideWithValue(mapController),
@@ -70,6 +53,7 @@ class _MainScreenState extends ConsumerState<MainScreen>
                 ),
                 const RouteLayer(),
                 const StopLayer(),
+                const BusLocationLayer(),
                 const UserLocationLayer(),
               ],
             ),

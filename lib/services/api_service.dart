@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 import 'package:athena_bus/models/arrival.dart';
+import 'package:athena_bus/models/bus_location.dart';
 import 'package:athena_bus/models/route.dart';
 import 'package:http/http.dart' as http;
 
@@ -39,5 +40,15 @@ final class ApiService {
     final res = await http.get(uri);
 
     return RouteDetails.fromJson(jsonDecode(res.body));
+  }
+
+  static Future<List<BusLocation>> getBusLocations(int routeId) async {
+    final uri = Uri.parse(
+      "https://telematics.oasa.gr/api/?lang=el&act=getBusLocation&p1=$routeId",
+    );
+    final res = await http.get(uri);
+    final List<dynamic> decoded = jsonDecode(res.body);
+
+    return decoded.map((point) => BusLocation.fromJson(point)).toList();
   }
 }

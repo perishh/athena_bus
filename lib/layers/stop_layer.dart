@@ -19,7 +19,7 @@ class StopLayer extends HookConsumerWidget {
 
     final selectedRoute = ref.watch(selectedRouteProvider);
     final routeDetails = selectedRoute != null
-        ? ref.watch(routeDetailsProvider(selectedRoute.$1.id)).value
+        ? ref.watch(routeDetailsProvider(selectedRoute.$1.id)).value?.details
         : null;
 
     useEffect(() {

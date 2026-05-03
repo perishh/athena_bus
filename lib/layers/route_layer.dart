@@ -14,7 +14,7 @@ class RouteLayer extends ConsumerWidget {
       return const SizedBox.shrink();
     }
 
-    final routeDetails = ref.watch(routeDetailsProvider(selected.$1.id)).value;
+    final routeDetails = ref.watch(routeDetailsProvider(selected.$1.id)).value?.details;
 
     if (routeDetails == null) {
       return const SizedBox.shrink();
