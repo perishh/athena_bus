@@ -10,14 +10,16 @@ enum DatasetStatus { notDownloaded, downloading, downloaded, error }
 class DatasetManager extends _$DatasetManager {
   @override
   Future<Map<Dataset, DatasetStatus>> build() async {
-    return {
-      Dataset.stops: await DatasetService.isDownloaded(Dataset.stops)
+    final Map<Dataset, DatasetStatus> initialState = {};
+
+    for (final dataset in Dataset.values) {
+      final isDownloaded = await DatasetService.isDownloaded(dataset);
+      initialState[dataset] = isDownloaded
           ? DatasetStatus.downloaded
-          : DatasetStatus.notDownloaded,
-      Dataset.routes: await DatasetService.isDownloaded(Dataset.routes)
-          ? DatasetStatus.downloaded
-          : DatasetStatus.notDownloaded,
-    };
+          : DatasetStatus.notDownloaded;
+    }
+
+    return initialState;
   }
 
   Future download(Dataset dataset) async {
