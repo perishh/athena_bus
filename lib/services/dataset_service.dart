@@ -10,20 +10,35 @@ class DatasetService {
     try {
       final db = await DatabaseService.instance.database;
 
-      final data = await ApiService.getGzippedData(dataset.endpoint);
-      await db.transaction((txn) async {
-        var batch = txn.batch();
-        for (var line in data.substring(1, data.length - 1).split("),(")) {
-          var formatted = line
-              .replaceAll(RegExp("(\"null\"|\"\")"), "NULL")
-              .replaceAll("'", r"''")
-              .replaceAll(RegExp(r'(?<!\\)"'), "'");
-          batch.rawInsert(
-            "INSERT INTO ${dataset.table}(${dataset.columns}) VALUES ($formatted)",
-          );
-        }
-        await batch.commit(noResult: true);
-      });
+      if (dataset == Dataset.lines) {
+        final data = await ApiService.getLines();
+        await db.transaction((txn) async {
+          var batch = txn.batch();
+          for (var line in data) {
+            final sql = line.sqlQuery;
+            batch.rawInsert(
+              "INSERT INTO ${dataset.table}(${sql.$1}) VALUES (${List.filled(sql.$2.length, '?').join(',')})",
+              sql.$2,
+            );
+          }
+          await batch.commit(noResult: true);
+        });
+      } else {
+        final data = await ApiService.getGzippedData(dataset.endpoint);
+        await db.transaction((txn) async {
+          var batch = txn.batch();
+          for (var line in data.substring(1, data.length - 1).split("),(")) {
+            var formatted = line
+                .replaceAll(RegExp("(\"null\"|\"\")"), "NULL")
+                .replaceAll("'", r"''")
+                .replaceAll(RegExp(r'(?<!\\)"'), "'");
+            batch.rawInsert(
+              "INSERT INTO ${dataset.table}(${dataset.columns}) VALUES ($formatted)",
+            );
+          }
+          await batch.commit(noResult: true);
+        });
+      }
     } catch (e) {
       return false;
     }

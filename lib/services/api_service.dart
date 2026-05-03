@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 import 'package:athena_bus/models/arrival.dart';
 import 'package:athena_bus/models/bus_location.dart';
+import 'package:athena_bus/models/line.dart';
 import 'package:athena_bus/models/route.dart';
 import 'package:http/http.dart' as http;
 
@@ -12,6 +13,15 @@ final class ApiService {
     final uri = Uri.parse("https://telematics.oasa.gr/api/?act=$dataset");
     final res = await http.get(uri).timeout(const Duration(seconds: 5));
     return utf8.decode(GZipCodec().decode(res.bodyBytes));
+  }
+
+  static Future<List<Line>> getLines() async {
+    final uri = Uri.parse(
+      "https://telematics.oasa.gr/api/?act=webGetLinesWithMLInfo",
+    );
+    final res = await http.get(uri).timeout(const Duration(seconds: 5));
+    final List<dynamic> decoded = jsonDecode(res.body);
+    return decoded.map((x) => Line.fromJson(x)).toList();
   }
 
   static Future<ArrivalsResponse> getArrivals(int stopId) async {
