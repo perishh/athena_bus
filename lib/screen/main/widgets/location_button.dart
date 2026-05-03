@@ -1,5 +1,5 @@
 import 'package:athena_bus/generated/material_community_icons.dart';
-import 'package:athena_bus/providers/arrivals_sheet_controller_provider.dart';
+import 'package:athena_bus/providers/bottom_sheet_navigation_provider.dart';
 import 'package:athena_bus/providers/location_manager_provider.dart';
 import 'package:athena_bus/providers/map_controller_provider.dart';
 import 'package:athena_bus/providers/stops_provider.dart';
@@ -14,7 +14,7 @@ class LocationButton extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final mapController = ref.watch(mapControllerProvider);
-    final sheetController = ref.watch(arrivalsSheetControllerProvider);
+    final sheetController = ref.watch(sheetControllerProvider);
 
     final bottom = useState(16.0);
 

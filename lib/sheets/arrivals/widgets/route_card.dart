@@ -1,7 +1,7 @@
 import 'package:athena_bus/generated/material_community_icons.dart';
 import 'package:athena_bus/models/arrival.dart';
 import 'package:athena_bus/models/route.dart';
-import 'package:athena_bus/providers/arrivals_sheet_controller_provider.dart';
+import 'package:athena_bus/providers/bottom_sheet_navigation_provider.dart';
 import 'package:athena_bus/providers/selected_route_provider.dart';
 import 'package:athena_bus/widgets/blurred_container.dart';
 import 'package:athena_bus/widgets/marquee_plus.dart';
@@ -26,7 +26,7 @@ class RouteCard extends ConsumerWidget {
               ref
                   .read(selectedRouteProvider.notifier)
                   .select(route.$1, route.$2);
-              final sheetController = ref.read(arrivalsSheetControllerProvider);
+              final sheetController = ref.read(sheetControllerProvider);
               sheetController.animateTo(
                 0.1,
                 duration: const Duration(milliseconds: 300),

@@ -1,14 +1,12 @@
-import 'package:athena_bus/generated/material_community_icons.dart';
 import 'package:athena_bus/layers/bus_location_layer.dart';
 import 'package:athena_bus/layers/route_layer.dart';
 import 'package:athena_bus/layers/stop_layer.dart';
 import 'package:athena_bus/layers/user_location_layer.dart';
 import 'package:athena_bus/providers/map_controller_provider.dart';
+import 'package:athena_bus/screen/main/widgets/dataset_button.dart';
 import 'package:athena_bus/screen/main/widgets/location_button.dart';
 import 'package:athena_bus/screen/main/widgets/route_top_bar.dart';
-import 'package:athena_bus/sheets/arrivals/arrivals_bottom_sheet.dart';
-import 'package:athena_bus/sheets/dataset/dataset_bottom_sheet.dart';
-import 'package:athena_bus/widgets/blurred_container.dart';
+import 'package:athena_bus/sheets/main_bottom_sheet.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_map_animations/flutter_map_animations.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
@@ -57,25 +55,9 @@ class _MainScreenState extends ConsumerState<MainScreen>
                 const UserLocationLayer(),
               ],
             ),
-            Positioned(
-              right: 16,
-              top: 16,
-              child: SafeArea(
-                child: BlurredContainer(
-                  padding: EdgeInsets.all(8),
-                  borderRadius: BorderRadius.circular(999),
-                  child: Icon(MaterialCommunityIcons.database_outline),
-                  onTap: () {
-                    showModalBottomSheet(
-                      context: context,
-                      builder: (context) => const DatasetBottomSheet(),
-                    );
-                  },
-                ),
-              ),
-            ),
+            const DatasetButton(),
             const LocationButton(),
-            const ArrivalsBottomSheet(),
+            const MainBottomSheet(),
             const RouteTopBar(),
           ],
         ),

@@ -1,5 +1,7 @@
 import 'package:athena_bus/generated/material_community_icons.dart';
+import 'package:athena_bus/hooks/use_bottom_sheet_navigation.dart';
 import 'package:athena_bus/models/stop.dart';
+import 'package:athena_bus/providers/bottom_sheet_navigation_provider.dart';
 import 'package:athena_bus/providers/map_controller_provider.dart';
 import 'package:athena_bus/providers/selected_route_provider.dart';
 import 'package:athena_bus/providers/stops_provider.dart';
@@ -16,7 +18,11 @@ class StopLayer extends HookConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final mapController = ref.watch(mapControllerProvider).mapController;
     final stops = ref.watch(stopsProvider);
-    final selectedStop = ref.watch(selectedStopProvider);
+
+    final bottomSheetNavigation = useBottomSheetNavigation(ref);
+    final selectedStop = bottomSheetNavigation
+        .getCurrentPageAs<ArrivalsPage>()
+        ?.stop;
 
     final selectedRoute = ref.watch(selectedRouteProvider);
     final routeDetails = selectedRoute != null
@@ -66,7 +72,8 @@ class StopLayer extends HookConsumerWidget {
           height: 36,
           width: 36,
           child: GestureDetector(
-            onTap: () => ref.read(selectedStopProvider.notifier).select(stop),
+            onTap: () =>
+                bottomSheetNavigation.pushOrReplace(ArrivalsPage(stop)),
             child: AnimatedContainer(
               duration: const Duration(milliseconds: 200),
               padding: EdgeInsets.all(6),
