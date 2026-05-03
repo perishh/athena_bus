@@ -52,7 +52,7 @@ class RouteDetailsNotifier extends _$RouteDetailsNotifier {
 
   void _startPolling(int routeId) {
     _timer?.cancel();
-    _timer = Timer.periodic(const Duration(seconds: 15), (_) async {
+    _timer = Timer.periodic(const Duration(seconds: 8), (_) async {
       await _updateBusLocations(routeId);
     });
   }

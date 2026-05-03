@@ -74,21 +74,6 @@ class _MainScreenState extends ConsumerState<MainScreen>
                 ),
               ),
             ),
-            Positioned(
-              right: 16,
-              bottom: 16,
-              child: SafeArea(
-                child: BlurredContainer(
-                  child: Icon(MaterialCommunityIcons.crosshairs_gps),
-                  onTap: () {
-                    showModalBottomSheet(
-                      context: context,
-                      builder: (context) => const DatasetBottomSheet(),
-                    );
-                  },
-                ),
-              ),
-            ),
             const LocationButton(),
             const ArrivalsBottomSheet(),
             const RouteTopBar(),

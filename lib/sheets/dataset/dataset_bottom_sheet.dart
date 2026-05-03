@@ -54,13 +54,13 @@ class DatasetBottomSheet extends HookConsumerWidget {
                         color: Colors.white.withAlpha(35),
                         padding: EdgeInsets.all(8),
                         borderRadius: BorderRadius.circular(999),
-                        child: Icon(dataset.icon, size: 32),
+                        child: Icon(dataset.icon, size: 24),
                       ),
                       Expanded(
                         child: Text(
                           dataset.displayName,
                           style: TextStyle(
-                            fontSize: 18,
+                            fontSize: 16,
                             fontWeight: FontWeight.w500,
                           ),
                         ),
@@ -75,6 +75,7 @@ class DatasetBottomSheet extends HookConsumerWidget {
                           : BlurredContainer(
                               padding: EdgeInsets.all(8),
                               borderRadius: BorderRadius.circular(999),
+                              color: Colors.white38,
                               onTap:
                                   state[dataset] ==
                                           DatasetStatus.notDownloaded ||

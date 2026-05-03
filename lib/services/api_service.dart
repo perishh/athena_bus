@@ -27,7 +27,9 @@ final class ApiService {
       "https://telematics.oasa.gr/api/?act=webRoutesForStop&p1=$stopId",
     );
     final res = await http.get(uri);
-    final List<dynamic> decoded = jsonDecode(res.body);
+    final List<dynamic> decoded = jsonDecode(
+      res.body,
+    ); // TODO: Detected null response
     return decoded
         .map((x) => (Route.fromJson(x), x['LineID'] as String))
         .toList();

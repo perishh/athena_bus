@@ -114,7 +114,9 @@ class ArrivalsBottomSheet extends HookConsumerWidget {
                           itemCount: state.lines.length,
                           itemBuilder: (context, index) {
                             return BlurredContainer(
-                              key: ValueKey(state.lines.elementAt(index)),
+                              key: ValueKey(
+                                'arrival-${state.lines.elementAt(index)}',
+                              ),
                               margin: EdgeInsets.only(
                                 right: 8,
                                 left: index == 0 ? 16 : 0,

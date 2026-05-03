@@ -1,9 +1,11 @@
 import 'package:athena_bus/generated/material_community_icons.dart';
+import 'package:athena_bus/providers/arrivals_sheet_controller_provider.dart';
 import 'package:athena_bus/providers/location_manager_provider.dart';
 import 'package:athena_bus/providers/map_controller_provider.dart';
 import 'package:athena_bus/providers/stops_provider.dart';
 import 'package:athena_bus/widgets/blurred_container.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 class LocationButton extends HookConsumerWidget {
@@ -12,9 +14,25 @@ class LocationButton extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final mapController = ref.watch(mapControllerProvider);
+    final sheetController = ref.watch(arrivalsSheetControllerProvider);
+
+    final bottom = useState(16.0);
+
+    void sheetExtentListener() {
+      bottom.value = (sheetController.pixels + 8.0).clamp(
+        16.0,
+        double.infinity,
+      );
+    }
+
+    useEffect(() {
+      sheetController.addListener(sheetExtentListener);
+      return () => sheetController.removeListener(sheetExtentListener);
+    }, []);
+
     return Positioned(
       right: 16,
-      bottom: 16,
+      bottom: bottom.value,
       child: SafeArea(
         child: BlurredContainer(
           padding: EdgeInsets.all(8),

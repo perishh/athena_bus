@@ -1,4 +1,5 @@
 import 'package:athena_bus/generated/material_community_icons.dart';
+import 'package:athena_bus/models/stop.dart';
 import 'package:athena_bus/providers/map_controller_provider.dart';
 import 'package:athena_bus/providers/selected_route_provider.dart';
 import 'package:athena_bus/providers/stops_provider.dart';
@@ -41,47 +42,59 @@ class StopLayer extends HookConsumerWidget {
       return subscription.cancel;
     }, []);
 
+    final stopList = useMemoized(() {
+      if (selectedRoute == null) {
+        return stops;
+      } else {
+        final allStops = routeDetails?.stops ?? [];
+        return allStops
+            .fold<Map<int, Stop>>({}, (acc, stop) {
+              acc[stop.id] = stop;
+              return acc;
+            })
+            .values
+            .toList();
+      }
+    }, [selectedRoute, stops, routeDetails]);
+
     return MarkerLayer(
-      markers: (selectedRoute == null ? stops : (routeDetails?.stops ?? []))
-          .map((stop) {
-            final isSelected = selectedStop?.id == stop.id;
-            return Marker(
-              key: ValueKey(stop.id),
-              point: LatLng(stop.lat, stop.lng),
-              height: 36,
-              width: 36,
-              child: GestureDetector(
-                onTap: () =>
-                    ref.read(selectedStopProvider.notifier).select(stop),
-                child: AnimatedContainer(
-                  duration: const Duration(milliseconds: 200),
-                  padding: EdgeInsets.all(6),
-                  decoration: BoxDecoration(
+      markers: stopList.map((stop) {
+        final isSelected = selectedStop?.id == stop.id;
+        return Marker(
+          key: ValueKey('stop-${stop.id}'),
+          point: LatLng(stop.lat, stop.lng),
+          height: 36,
+          width: 36,
+          child: GestureDetector(
+            onTap: () => ref.read(selectedStopProvider.notifier).select(stop),
+            child: AnimatedContainer(
+              duration: const Duration(milliseconds: 200),
+              padding: EdgeInsets.all(6),
+              decoration: BoxDecoration(
+                color: isSelected
+                    ? Colors.blue.withAlpha(240)
+                    : Colors.white.withAlpha(240),
+                borderRadius: BorderRadius.circular(1000),
+                boxShadow: [
+                  BoxShadow(
+                    blurRadius: isSelected ? 12 : 8,
                     color: isSelected
-                        ? Colors.blue.withAlpha(240)
-                        : Colors.white.withAlpha(240),
-                    borderRadius: BorderRadius.circular(1000),
-                    boxShadow: [
-                      BoxShadow(
-                        blurRadius: isSelected ? 12 : 8,
-                        color: isSelected
-                            ? Colors.blue.withAlpha(100)
-                            : Colors.black26,
-                      ),
-                    ],
+                        ? Colors.blue.withAlpha(100)
+                        : Colors.black26,
                   ),
-                  child: Center(
-                    child: Icon(
-                      MaterialCommunityIcons.bus_stop,
-                      color: isSelected ? Colors.white : Colors.black,
-                      size: 24,
-                    ),
-                  ),
+                ],
+              ),
+              child: Center(
+                child: Icon(
+                  MaterialCommunityIcons.bus_stop,
+                  color: isSelected ? Colors.white : Colors.black,
+                  size: 24,
                 ),
               ),
-            );
-          })
-          .toList(),
+            ),
+          ),
+        );
+      }).toList(),
     );
   }
 }
