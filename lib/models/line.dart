@@ -15,6 +15,17 @@ class Line {
     required this.isMaster,
   });
 
+  factory Line.fromMap(Map<String, Object?> map) {
+    return Line(
+      id: map['id'] as int,
+      code: map['code'] as String,
+      desc: map['desc'] as String,
+      descEn: map['descEn'] as String,
+      masterLineId: map['masterLineId'] as int,
+      isMaster: map['isMaster'] as int == 1,
+    );
+  }
+
   factory Line.fromJson(Map<String, dynamic> json) {
     return Line(
       id: int.parse(json['line_code'].toString()),

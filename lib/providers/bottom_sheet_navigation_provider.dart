@@ -1,7 +1,8 @@
 import 'package:athena_bus/models/stop.dart';
 import 'package:athena_bus/sheets/arrivals/arrivals_bottom_sheet.dart';
 import 'package:athena_bus/sheets/dataset/dataset_bottom_sheet.dart';
-import 'package:flutter/widgets.dart';
+import 'package:athena_bus/sheets/schedule/schedule_bottom_sheet.dart';
+import 'package:flutter/widgets.dart' hide Route;
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'bottom_sheet_navigation_provider.g.dart';
@@ -26,6 +27,15 @@ class ArrivalsPage extends BottomSheetPage {
 class DatasetPage extends BottomSheetPage {
   @override
   Widget build() => const DatasetBottomSheet();
+}
+
+class SchedulePage extends BottomSheetPage {
+  final int lineId;
+
+  SchedulePage(this.lineId);
+
+  @override
+  Widget build() => const ScheduleBottomSheet();
 }
 
 @Riverpod(keepAlive: true)

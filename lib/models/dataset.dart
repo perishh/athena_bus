@@ -18,8 +18,8 @@ enum Dataset {
   ),
   lines(
     "lines",
-    "getLines",
-    "id, code, desc, descEn, route1_1, route1_2, route2_1, route2_2, route3_1, route3_2, route4_1, route4_2, route5_1, route5_2, route6_1, route6_2, route7_1, route7_2",
+    "",
+    "",
     "Γραμμές",
     MaterialCommunityIcons.chart_timeline_variant,
   )

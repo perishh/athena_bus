@@ -4,6 +4,7 @@ import 'package:athena_bus/models/arrival.dart';
 import 'package:athena_bus/models/bus_location.dart';
 import 'package:athena_bus/models/line.dart';
 import 'package:athena_bus/models/route.dart';
+import 'package:athena_bus/models/schedule.dart';
 import 'package:http/http.dart' as http;
 
 final class ApiService {
@@ -62,5 +63,35 @@ final class ApiService {
     final List<dynamic> decoded = jsonDecode(res.body);
 
     return decoded.map((point) => BusLocation.fromJson(point)).toList();
+  }
+
+  static Future<List<ScheduleDay>> getScheduleDays(int lineId) async {
+    final uri = Uri.parse(
+      "https://telematics.oasa.gr/api/?lang=el&act=getScheduleDaysMasterline&p1=$lineId",
+    );
+    final res = await http.get(uri);
+    final List<dynamic> decoded = jsonDecode(res.body);
+
+    return decoded.map((sched) => ScheduleDay.fromJson(sched)).toList();
+  }
+
+  static Future<Schedule> getSchedule(
+    int masterLineId,
+    int lineId,
+    String scheduleCode,
+  ) async {
+    final uri = Uri.parse(
+      "https://telematics.oasa.gr/api/?act=getSchedLines&p1=$masterLineId&p2=$scheduleCode&p3=$lineId",
+    );
+    final res = await http.get(uri);
+    return Schedule.fromJson(jsonDecode(res.body));
+  }
+
+  static Future<Schedule> getDailySchedule(int lineId) async {
+    final uri = Uri.parse(
+      "https://telematics.oasa.gr/api/?act=getDailySchedule&line_code=$lineId",
+    );
+    final res = await http.get(uri);
+    return Schedule.fromJson(jsonDecode(res.body));
   }
 }

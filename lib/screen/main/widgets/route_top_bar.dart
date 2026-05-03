@@ -1,16 +1,19 @@
 import 'package:athena_bus/generated/material_community_icons.dart';
+import 'package:athena_bus/hooks/use_bottom_sheet_navigation.dart';
+import 'package:athena_bus/providers/bottom_sheet_navigation_provider.dart';
 import 'package:athena_bus/providers/selected_route_provider.dart';
 import 'package:athena_bus/widgets/blurred_container.dart';
 import 'package:athena_bus/widgets/marquee_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
-class RouteTopBar extends ConsumerWidget {
+class RouteTopBar extends HookConsumerWidget {
   const RouteTopBar({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final selected = ref.watch(selectedRouteProvider);
+    final navigation = useBottomSheetNavigation(ref);
 
     if (selected == null) {
       return const SizedBox.shrink();
@@ -53,6 +56,17 @@ class RouteTopBar extends ConsumerWidget {
                       fontSize: 15,
                     ),
                   ),
+                ),
+              ),
+              BlurredContainer(
+                color: Colors.white54,
+                padding: const EdgeInsets.all(6),
+                borderRadius: BorderRadius.circular(999),
+                onTap: () =>
+                    navigation.pushOrReplace(SchedulePage(selected.$1.lineId)),
+                child: const Icon(
+                  MaterialCommunityIcons.calendar_clock,
+                  size: 18,
                 ),
               ),
               BlurredContainer(

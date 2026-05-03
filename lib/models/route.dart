@@ -18,17 +18,6 @@ class Route {
     required this.length,
   });
 
-  factory Route.fromMap(Map<String, Object?> map) {
-    return Route(
-      id: map['id'] as int,
-      lineId: map['lineId'] as int,
-      desc: map['desc'] as String,
-      descEn: map['descEn'] as String,
-      type: map['type'] as int,
-      length: double.parse(map['length'].toString()),
-    );
-  }
-
   factory Route.fromJson(Map<String, dynamic> json) => Route(
     id: json['RouteCode'] as int,
     lineId: json['LineCode'] as int,
